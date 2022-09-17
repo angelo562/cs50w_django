@@ -12,10 +12,15 @@
         <div class="row">
             <div class="sidebar col-lg-2 col-md-3">
                 <h2>Wiki</h2>
+
+
                 <form action="{% url 'encyclopedia:url_search' %}" method="GET">
-                    {{ form }}
+                    {{ search_form }}
                     <input type="submit" value="Submit">
                 </form>
+
+
+
                 <div>
                     <a href="{% url 'encyclopedia:url_index' %}">Home</a>
                 </div>

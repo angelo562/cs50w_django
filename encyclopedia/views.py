@@ -1,29 +1,28 @@
-from django import forms
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from markdown2 import Markdown
 from . import util
+from .forms import SearchForm
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger()
 
-class SearchForm(forms.Form):
-    title = forms.CharField(label="Search Term", max_length=100)
-
 def index(request):
-    # logger.debug(f"entries is of type {type(util.list_entries())}")
+    """ Returns the home/index page """
     return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries()
+        "entries": util.list_entries(),
+        'search_form': SearchForm(),
     })
 
 def display(request, title):
+    """ Displays the page for each entry if an entry.md exists"""
+
     logger.debug(f"request is {request} of type {type(request)}")
-    # Displays the page for each entry if an entry.md exists
     markdowner = Markdown()
     
     if util.get_entry(title):
-        # logger.debug(f"hello, i'm a logger. title is {title}")
+        logger.debug(f"hello, i'm a logger. title is {title}")
 
         return render(request, "encyclopedia/entry.html",{ # Entry template
             "entry": markdowner.convert(util.get_entry(title)),
@@ -35,8 +34,8 @@ def display(request, title):
         return render(request, "encyclopedia/404page.html")
 
 def search(request):
+    """ Searches entries for a match or returns substrings?"""
     GET_value = request.GET.get('q','QueryNotFound')
-    # logger.debug(f"hello, i'm a logger. get_value is {GET_value}")
 
     if util.get_entry(GET_value):
         return HttpResponseRedirect(f"{GET_value}")
