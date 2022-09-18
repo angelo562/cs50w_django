@@ -9,7 +9,7 @@ urlpatterns = [
 
     # I can send the submitted query to any path.
     path("search", views.search, name="url_search"),
-    path("wiki/<str:title>", views.display, name="url_display"), 
+    path("<str:title>", views.display, name="url_display"), 
         # Matches str before ".html"
     path("modify", views.create, name="url_modify"),
     

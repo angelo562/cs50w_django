@@ -44,6 +44,8 @@ def search(request):
 
     if request.method == 'GET':
         GET_value = request.GET.get('q','QueryNotFound')
+        logger.warning(f"request.GET is {request.GET}")
+
 
         # if an entry exists redirects to "/wiki/{GET_value}"
         if util.get_entry(GET_value):
