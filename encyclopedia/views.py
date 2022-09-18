@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.http import HttpResponseRedirect
 from markdown2 import Markdown
 from . import util
@@ -34,19 +35,21 @@ def display(request, title):
         return render(request, "encyclopedia/404page.html")
 
 def search(request):
-    """ Searches entries for a match or returns substrings?"""
-    GET_value = request.GET.get('q','QueryNotFound')
+    """ Searches for an exact entry  match or returns closest matches if exact entry not found
+    """
 
-    if util.get_entry(GET_value):
-        return HttpResponseRedirect(f"{GET_value}")
-    else:
-        substr_matches = []
-        for entry in util.list_entries():
-            if GET_value.lower() in entry.lower():
-                substr_matches.append(entry)
-        
-        return render(request, "encyclopedia/entry.html", {
-            'entries': substr_matches,
-            'GET_value': GET_value,
-            'search':True
-        })
+    if request.method == 'GET':
+        GET_value = request.GET.get('q','QueryNotFound')
+
+        # if an entry exists redirects to "/wiki/{GET_value}"
+        if util.get_entry(GET_value):
+            return HttpResponseRedirect(f"{GET_value}")
+
+        else:
+            return render(request, "encyclopedia/index.html", {
+                'entries': util.get_close_matches(GET_value),
+                'GET_value': GET_value,
+                'search':True
+            })
+
+    return redirect(reverse('encyclopedia:url_index'))

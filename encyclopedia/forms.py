@@ -1,8 +1,11 @@
 from django import forms
 
+# Create forms here
+
 class SearchForm(forms.Form):
     """ Form Class for Search Bar """  
     # Research why this works.
-    title = forms.CharField(label='', widget=forms.TextInput(attrs={
+    q = forms.CharField(label='', widget=forms.TextInput(attrs={
       "class": "search",
-      "placeholder": "Search Encyclopedia"}))
+      "placeholder": "Search Encyclopedia",}
+      ))

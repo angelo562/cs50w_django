@@ -35,3 +35,14 @@ def get_entry(title):
         return f.read().decode("utf-8")
     except FileNotFoundError:
         return None
+
+def get_close_matches(GET_value):
+    """
+    Retrieves closest encyclopedia entry matches as a list by searching for the specified substring.  If no substring exists, returns None.
+    """
+    substr_matches = []
+    for entry in list_entries():
+        if GET_value.lower() in entry.lower():
+            substr_matches.append(entry)
+    return substr_matches
+        
