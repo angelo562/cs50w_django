@@ -64,6 +64,9 @@ def search(request):
                     'search': True
                 })
         else:
-            return render(request, "encyclopedia/404page.html")
+            # Should be server-side validation, passing back not valid form to browser. Untested
+            return render(request, 'encyclopedia/index.html', {
+                'search_form' : form
+            })
 
     return redirect(reverse('encyclopedia:url_index'))
