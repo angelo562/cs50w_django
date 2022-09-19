@@ -44,10 +44,15 @@ def search(request):
     """
 
     if request.method == 'GET':
-        GET_value = request.GET.get('q', 'QueryNotFound')
+        GET_value = request.GET.get('q', None)
         logger.info(f"request.GET is {request.GET}")
 
-        # if an entry exists redirects to "/wiki/{GET_value}"
+        # If there is no search term do views.index()
+        logger.info(f"GET_value should be none, it is: {GET_value}")
+        if GET_value is None:
+            return HttpResponseRedirect("/wiki")
+        
+        # if an entry exists redirects to "{GET_value}"
         if util.get_entry(GET_value):
             return HttpResponseRedirect(f"{GET_value}")
 
