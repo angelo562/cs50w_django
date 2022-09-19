@@ -13,9 +13,11 @@ class SearchForm(forms.Form):
 class CreateEntry(forms.Form):
     """ Form class to create a new Entry"""
     title = forms.CharField(label="Entry Title", widget=forms.TextInput(attrs={
-        "placeholder": "e.g. Python",
+        "placeholder": "Enter Entry Title",
     }))
     body = forms.CharField(label="Body", widget=forms.Textarea(attrs={
-        "rows": 5 ,
+        'class': "form-control",
+        'rows': 3, 
+        'cols': 10,
         "placeholder": "Enter content using Markdown",
     }))

@@ -6,8 +6,11 @@ Page to create/edit
 
 
 {% block body %}
-    {{create_form}}
+    <form action="{% url 'encyclopedia:url_create' %}" method="POST">
+        {% csrf_token %}
+        {{create_form}}
+        <input type="submit" value="Save">
+    </form>
 
-    <input type="submit" value="Save Entry">
 {% endblock %}
     

@@ -20,11 +20,37 @@ def index(request):
 
 def create(request):
     """    Returns a create/edit page    """
-    # return redirect(reverse('encyclopedia:url_modify'))
+    
+    if request.method == "POST":
+        form = CreateEntry(request.POST)
+        logger.warning(f"form has been created")
+        if form.is_valid():
+            logger.warning(f"form is valid")
+
+            title = form.cleaned_data['title']
+            body = form.cleaned_data['body']
+
+            #  use title and body to save as {title}.md file.  using util.py Will save over any existing entry
+            util.save_entry(title, body)
+
+            # redirect to index
+            return redirect(reverse('encyclopedia:url_index'))
+
+
+
+
+        # TODO if entry does exist, REDIRECT? to entry page
+
+        pass
+    
     return render(request, "encyclopedia/modify.html", {
         "create_form": CreateEntry()
     })
 
+def edit(request):
+    """ edits the page """
+
+# TODO ADD AN EDIT BUTTON TO THE DISPLAY PAGE
 def display(request, entry_title):
     """ Displays the page for each entry if an entry.md exists"""
     logger.info(f"request is {request} of type {type(request)}")

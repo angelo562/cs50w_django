@@ -1,3 +1,1 @@
-# Jamie
-
-Nonaka.  Jamie Nonaka.
+Jamie is a Jamie
