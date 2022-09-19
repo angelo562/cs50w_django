@@ -44,23 +44,26 @@ def search(request):
     """
 
     if request.method == 'GET':
-        GET_value = request.GET.get('q', None)
-        logger.info(f"request.GET is {request.GET}")
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            GET_value = form.cleaned_data["q"]
 
-        # If there is no search term do views.index()
-        logger.info(f"GET_value should be none, it is: {GET_value}")
-        if GET_value is None:
-            return HttpResponseRedirect("/wiki")
-        
-        # if an entry exists redirects to "{GET_value}"
-        if util.get_entry(GET_value):
-            return HttpResponseRedirect(f"{GET_value}")
+            # If there is no search term do views.index()
+            logger.info(f"GET_value should be none, it is: {GET_value}")
+            if GET_value is None:
+                return HttpResponseRedirect("/wiki")
+            
+            # if an entry exists redirects to "{GET_value}"
+            if util.get_entry(GET_value):
+                return HttpResponseRedirect(f"{GET_value}")
 
+            else:
+                return render(request, "encyclopedia/index.html", {
+                    'entries': util.get_close_matches(GET_value),
+                    'GET_value': GET_value,
+                    'search': True
+                })
         else:
-            return render(request, "encyclopedia/index.html", {
-                'entries': util.get_close_matches(GET_value),
-                'GET_value': GET_value,
-                'search': True
-            })
+            return render(request, "encyclopedia/404page.html")
 
     return redirect(reverse('encyclopedia:url_index'))
