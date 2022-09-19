@@ -16,6 +16,10 @@
     <ul>
         {% for entry in entries %}
             <li><a href="{% url 'encyclopedia:url_display' entry_title=entry %}">{{entry}}</a></li>
+
+        {% empty %}
+            <li>No pages found.</li>
+
         {% endfor %}
         
     </ul>
