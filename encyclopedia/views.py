@@ -48,11 +48,6 @@ def search(request):
         if form.is_valid():
             GET_value = form.cleaned_data["q"]
 
-            # If there is no search term do views.index()
-            logger.info(f"GET_value should be none, it is: {GET_value}")
-            if GET_value is None:
-                return HttpResponseRedirect("/wiki")
-            
             # if an entry exists redirects to "{GET_value}"
             if util.get_entry(GET_value):
                 return HttpResponseRedirect(f"{GET_value}")
@@ -63,10 +58,6 @@ def search(request):
                     'GET_value': GET_value,
                     'search': True
                 })
-        else:
-            # Should be server-side validation, passing back not valid form to browser. Untested
-            return render(request, 'encyclopedia/index.html', {
-                'search_form' : form
-            })
 
+    # Server side validation of GET response. Else redirects to index
     return redirect(reverse('encyclopedia:url_index'))
