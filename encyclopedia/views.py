@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from markdown2 import Markdown
 from . import util
-from .forms import SearchForm
+from .forms import CreateEntry, SearchForm
 import logging
 
 logging.basicConfig(level=logging.WARNING)
@@ -20,8 +20,10 @@ def index(request):
 
 def create(request):
     """    Returns a create/edit page    """
-    return render(request, "encyclopedia/modify.html")
-
+    # return redirect(reverse('encyclopedia:url_modify'))
+    return render(request, "encyclopedia/modify.html", {
+        "create_form": CreateEntry()
+    })
 
 def display(request, entry_title):
     """ Displays the page for each entry if an entry.md exists"""
