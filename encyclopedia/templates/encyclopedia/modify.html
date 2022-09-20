@@ -12,11 +12,16 @@ Page to create/edit
         <input type="submit" value="Save">
     </form>
 
-    {%if messages %}
+    {% if messages %}
     {% for message in messages %}
     <div class="alert alert-danger" role="alert">
         {{ message }}
     </div>
+    <!-- insert link of title to help redirect-->
+    <li>
+        <a href="{% url 'encyclopedia:url_display' entry_title=title %}">{{title}}</a>
+    </li>
+
     {% endfor %}
     {% endif %}
 {% endblock %}

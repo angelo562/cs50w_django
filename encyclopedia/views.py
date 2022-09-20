@@ -20,48 +20,39 @@ def index(request):
 
 
 def create(request):
-    """    Returns a create/edit page    """
-    
+    """    Handles create page view    """
+
     if request.method == "POST":
         form = CreateEntry(request.POST)
-        logger.warning(f"form has been created")
         if form.is_valid():
-            logger.warning(f"form is valid")
-
             title, body = form.cleaned_data['title'], form.cleaned_data['body']
 
             if util.get_entry(title):
+                # Error msg if existing template
+                messages.error(
+                    request, 'Page already exists. Please edit using link below instead.')
 
-
-                #TODO present error message
-                messages.error(request, 'Page already exists. Please edit instead.')
-
-                
-                logger.warning(f"attempting to present msg to user {messages.error}")
-                return render(request, 'encyclopedia/modify.html',{
+                return render(request, 'encyclopedia/modify.html', {
                     "create_form": form,
+                    "title":title
                 })
-            #  use title and body to save as {title}.md file.  using util.py Will save over any existing entry
-            util.save_entry(title, body)
+            else:
+                util.save_entry(title, body)
+                return redirect(reverse('encyclopedia:url_index'))
 
-            # redirect to index
-            return redirect(reverse('encyclopedia:url_index'))
-
-
-
-
-        # TODO if entry does exist, REDIRECT? to entry page
-
-        pass
-    
+        else:
+            messages.error(request, 'Form is not valid')
     return render(request, "encyclopedia/modify.html", {
         "create_form": CreateEntry()
     })
+
 
 def edit(request):
     """ edits the page """
 
 # TODO ADD AN EDIT BUTTON TO THE DISPLAY PAGE
+
+
 def display(request, entry_title):
     """ Displays the page for each entry if an entry.md exists"""
     logger.info(f"request is {request} of type {type(request)}")
