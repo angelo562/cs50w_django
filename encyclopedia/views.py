@@ -101,9 +101,11 @@ def search(request):
         if form.is_valid():
             GET_value = form.cleaned_data["q"]
 
-            # if an entry exists redirects to "{GET_value}"
+            # if an entry exists redirects to "{GET_value}" using reverse()
             if util.get_entry(GET_value):
-                return HttpResponseRedirect(f"{GET_value}")
+                return redirect(reverse('encyclopedia:url_display', kwargs={
+                    "entry_title": GET_value
+                }))
 
             else:
                 return render(request, "encyclopedia/index.html", {
