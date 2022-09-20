@@ -28,11 +28,10 @@ def create(request):
         if form.is_valid():
             title, body = form.cleaned_data['title'], form.cleaned_data['body']
 
+            # If entry exists, Error msg and stay on form page
             if util.get_entry(title):
-                # Error msg if existing template
                 messages.error(
                     request, 'Page already exists. Please edit using link below instead.')
-
                 return render(request, 'encyclopedia/create.html', {
                     "create_form": form,
                     "title": title
@@ -50,39 +49,28 @@ def create(request):
 
 
 def edit(request, title):
-    """ edits the page """
+    """ Edits the page """
     if request.method == "POST":
-        logger.warning(f"Checking request.method {request.method}")
-
         form = EditEntry(request.POST)
-        logger.warning(f"Checking form. form is {form}")
-
-        logger.warning(f"is form valid? {form.is_valid()}")
         if form.is_valid():
             entry = form.cleaned_data['entry']
             util.save_entry(title, entry)
-
-            logger.warning(f"attempting to go to index after save")
-            return redirect(reverse('encyclopedia:url_display', kwargs={
-                'entry_title': title,
-            }))
+            return display(request, title)
 
     # Display edit page with Django text.
     return render(request, "encyclopedia/entry.html", {
         'entry_title': title,
         'search_form': SearchForm(),
         'edit': True,
-        # pop needs dict
-        "edit_form": EditEntry({"entry": util.get_entry(title)})
+        # If populating form, needs dict of the key to populate
+        "edit_form": EditEntry({"entry": util.get_entry(title)}) 
     })
 
 
 def display(request, entry_title):
     """ Displays the page for each entry if an entry.md exists"""
-    logger.info(f"request is {request} of type {type(request)}")
 
     markdowner = Markdown()
-
     if util.get_entry(entry_title):
         return render(request, "encyclopedia/entry.html", {
             "entry": markdowner.convert(util.get_entry(entry_title)),
@@ -101,14 +89,13 @@ def search(request):
 
     if request.method == 'GET':
         form = SearchForm(request.GET)
+
+        # Server side validation of GET response. Else redirects to index
         if form.is_valid():
             GET_value = form.cleaned_data["q"]
 
-            # if an entry exists redirects to "{GET_value}" using reverse()
-            if util.get_entry(GET_value):
-                return redirect(reverse('encyclopedia:url_display', kwargs={
-                    "entry_title": GET_value
-                }))
+            if util.get_entry(GET_value):           # If entry exists
+                return display(request, GET_value)
 
             else:
                 return render(request, "encyclopedia/index.html", {
@@ -117,11 +104,10 @@ def search(request):
                     'search': True
                 })
 
-    # Server side validation of GET response. Else redirects to index
-    return redirect(reverse('encyclopedia:url_index'))
+    return index(request)
+
 
 def get_random(request):
     """ If random page is clicked, will randomly select an entry"""
 
     return display(request, choice(util.list_entries()))
-
