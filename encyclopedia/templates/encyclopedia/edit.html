@@ -1,9 +1,37 @@
 {% extends "encyclopedia/layout.html" %}
 
 {% block title %}
-Page to Edit
+    {{ entry_title|capfirst  }}
 {% endblock %}
 
+
 {% block body %}
-EDIT here?
+    {% if edit is True  %}
+        {{ entry_title }}
+
+    <!-- TODO Add a save button -->
+    <form action="{% url 'encyclopedia:edit' title=entry_title %}" method="POST">
+        {% csrf_token %}
+        {{  edit_form  }}
+
+        <button type="submit" class="btn btn-primary">
+            Save Page
+        </button>
+        
+
+
+
+
+    </form>
+
+    {% else %}
+        {{ entry|safe }}
+
+    <!-- This adds a EDIT link for each title page.  Will redirect to /wiki/edit/{title}-->
+    <!-- 'enclopedia:edit' is namespace. title is set to entry_title from views.py. this is then matched from urls.py, to /wiki/edit/{title}  -->
+
+
+
+
+    {% endif %}
 {% endblock %}

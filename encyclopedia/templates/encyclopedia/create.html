@@ -9,7 +9,14 @@ Page to create/edit
     <form action="{% url 'encyclopedia:url_create' %}" method="POST">
         {% csrf_token %}
         {{create_form}}
-        <input type="submit" value="Save">
+        <!-- <input type="submit" value="Save"> -->
+
+        <button type="submit" class="btn btn-primary">
+            Save
+        </button>
+
+
+
     </form>
 
     {% if messages %}

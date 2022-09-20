@@ -21,3 +21,10 @@ class CreateEntry(forms.Form):
         'cols': 10,
         "placeholder": "Enter content using Markdown",
     }))
+
+class EditEntry(forms.Form):
+    """ Form class to edit an existing Entry"""
+    entry = forms.CharField(label="Entry", widget=forms.Textarea(attrs={
+        'class': "form-control",
+        'rows':15,
+    }))

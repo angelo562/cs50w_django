@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from markdown2 import Markdown
 from . import util
-from .forms import CreateEntry, SearchForm
+from .forms import CreateEntry, SearchForm, EditEntry
 import logging
 
 logging.basicConfig(level=logging.WARNING)
@@ -32,7 +32,7 @@ def create(request):
                 messages.error(
                     request, 'Page already exists. Please edit using link below instead.')
 
-                return render(request, 'encyclopedia/modify.html', {
+                return render(request, 'encyclopedia/create.html', {
                     "create_form": form,
                     "title":title
                 })
@@ -42,7 +42,7 @@ def create(request):
 
         else:
             messages.error(request, 'Form is not valid')
-    return render(request, "encyclopedia/modify.html", {
+    return render(request, "encyclopedia/create.html", {
         "create_form": CreateEntry(),
         'search_form': SearchForm(),
     })
@@ -50,8 +50,29 @@ def create(request):
 
 def edit(request,title):
     """ edits the page """
+    if request.method == "POST":
+        logger.warning(f"Checking request.method {request.method}")
+
+        form = EditEntry(request.POST)
+        logger.warning(f"Checking form. form is {form}")
+
+        logger.warning(f"is form valid? {form.is_valid()}")
+        if form.is_valid():
+            entry = form.cleaned_data['entry']
+            util.save_entry(title, entry)
+
+            logger.warning(f"attempting to go to index after save")
+            return redirect(reverse('encyclopedia:url_display', kwargs={
+                'entry_title':title,
+            }))
+
+
+    # Display edit page with Django text. 
     return render(request, "encyclopedia/edit.html", {
-        "title": title
+        'entry_title': title,
+        'search_form': SearchForm(),
+        'edit': True,
+        "edit_form" : EditEntry({"entry": util.get_entry(title)}) #pop needs dict
     })
 
 def display(request, entry_title):
