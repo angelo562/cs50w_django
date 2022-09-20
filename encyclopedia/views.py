@@ -43,7 +43,8 @@ def create(request):
         else:
             messages.error(request, 'Form is not valid')
     return render(request, "encyclopedia/modify.html", {
-        "create_form": CreateEntry()
+        "create_form": CreateEntry(),
+        'search_form': SearchForm(),
     })
 
 
@@ -51,8 +52,6 @@ def edit(request):
     """ edits the page """
 
 # TODO ADD AN EDIT BUTTON TO THE DISPLAY PAGE
-
-
 def display(request, entry_title):
     """ Displays the page for each entry if an entry.md exists"""
     logger.info(f"request is {request} of type {type(request)}")
@@ -63,6 +62,7 @@ def display(request, entry_title):
         return render(request, "encyclopedia/entry.html", {
             "entry": markdowner.convert(util.get_entry(entry_title)),
             "entry_title": entry_title,  # TODO make CSS all capitalized.
+            'search_form': SearchForm(),
         })
 
     else:
