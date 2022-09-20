@@ -6,6 +6,7 @@ from markdown2 import Markdown
 from . import util
 from .forms import CreateEntry, SearchForm, EditEntry
 import logging
+from random import choice
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger()
@@ -118,3 +119,9 @@ def search(request):
 
     # Server side validation of GET response. Else redirects to index
     return redirect(reverse('encyclopedia:url_index'))
+
+def get_random(request):
+    """ If random page is clicked, will randomly select an entry"""
+
+    return display(request, choice(util.list_entries()))
+
