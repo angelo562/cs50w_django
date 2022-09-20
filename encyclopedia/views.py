@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -27,9 +28,19 @@ def create(request):
         if form.is_valid():
             logger.warning(f"form is valid")
 
-            title = form.cleaned_data['title']
-            body = form.cleaned_data['body']
+            title, body = form.cleaned_data['title'], form.cleaned_data['body']
 
+            if util.get_entry(title):
+
+
+                #TODO present error message
+                messages.error(request, 'Page already exists. Please edit instead.')
+
+                
+                logger.warning(f"attempting to present msg to user {messages.error}")
+                return render(request, 'encyclopedia/modify.html',{
+                    "create_form": form,
+                })
             #  use title and body to save as {title}.md file.  using util.py Will save over any existing entry
             util.save_entry(title, body)
 
