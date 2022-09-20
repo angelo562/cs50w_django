@@ -34,7 +34,7 @@ def create(request):
 
                 return render(request, 'encyclopedia/create.html', {
                     "create_form": form,
-                    "title":title
+                    "title": title
                 })
             else:
                 util.save_entry(title, body)
@@ -48,7 +48,7 @@ def create(request):
     })
 
 
-def edit(request,title):
+def edit(request, title):
     """ edits the page """
     if request.method == "POST":
         logger.warning(f"Checking request.method {request.method}")
@@ -63,29 +63,31 @@ def edit(request,title):
 
             logger.warning(f"attempting to go to index after save")
             return redirect(reverse('encyclopedia:url_display', kwargs={
-                'entry_title':title,
+                'entry_title': title,
             }))
 
-
-    # Display edit page with Django text. 
-    return render(request, "encyclopedia/edit.html", {
+    # Display edit page with Django text.
+    return render(request, "encyclopedia/entry.html", {
         'entry_title': title,
         'search_form': SearchForm(),
         'edit': True,
-        "edit_form" : EditEntry({"entry": util.get_entry(title)}) #pop needs dict
+        # pop needs dict
+        "edit_form": EditEntry({"entry": util.get_entry(title)})
     })
+
 
 def display(request, entry_title):
     """ Displays the page for each entry if an entry.md exists"""
     logger.info(f"request is {request} of type {type(request)}")
-    
+
     markdowner = Markdown()
 
     if util.get_entry(entry_title):
         return render(request, "encyclopedia/entry.html", {
             "entry": markdowner.convert(util.get_entry(entry_title)),
-            "entry_title": entry_title,  
+            "entry_title": entry_title,
             'search_form': SearchForm(),
+            'edit': False,
         })
 
     else:

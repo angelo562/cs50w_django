@@ -6,10 +6,20 @@
 
 
 {% block body %}
+    <!-- Displays a regular entry page if it exists with edit button -->
+    <!-- If editing, and edit=True, shows preopulated form with save button -->
+
     {% if edit is True  %}
-    <!-- TODO Show text area form of entry text This will be a form-->
-    <!-- TODO Add a save button -->
-    {{  edit_form  }}
+    {{ entry_title }}
+    <form action="{% url 'encyclopedia:edit' title=entry_title %}" method="POST">
+        {% csrf_token %}
+        {{  edit_form  }}
+
+        <button type="submit" class="btn btn-primary">
+            Save Page
+        </button>
+    </form>
+    <!-- if edit is false -->
     {% else %}
     {{ entry|safe }}
 

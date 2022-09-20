@@ -1,9 +1,1 @@
-Jamie is a Jamie object with jamie method.
-
-# Jamie
-
-## Jamie
-
-
-
-## [jamie]
+Jamie is a Jamie object with jamie method.
