@@ -48,20 +48,22 @@ def create(request):
     })
 
 
-def edit(request):
+def edit(request,title):
     """ edits the page """
+    return render(request, "encyclopedia/edit.html", {
+        "title": title
+    })
 
-# TODO ADD AN EDIT BUTTON TO THE DISPLAY PAGE
 def display(request, entry_title):
     """ Displays the page for each entry if an entry.md exists"""
     logger.info(f"request is {request} of type {type(request)}")
-
+    
     markdowner = Markdown()
 
     if util.get_entry(entry_title):
         return render(request, "encyclopedia/entry.html", {
             "entry": markdowner.convert(util.get_entry(entry_title)),
-            "entry_title": entry_title,  # TODO make CSS all capitalized.
+            "entry_title": entry_title,  
             'search_form': SearchForm(),
         })
 
